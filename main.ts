@@ -1,10 +1,24 @@
 namespace SpriteKind {
     export const wise_monkey = SpriteKind.create()
+    export const heart = SpriteKind.create()
 }
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.buttonPink, function (sprite, location) {
+    game.over(false)
+})
 scene.onHitWall(SpriteKind.Player, function (sprite, location) {
     if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
         jump_track = 0
     }
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorOpenSouth, function (sprite, location) {
+    tiles.setTilemap(tilemap`level9`)
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.builtin.field0, function (sprite, location) {
+    game.over(false)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.heart, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    info.changeLifeBy(1)
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (jump_track < 2) {
@@ -43,18 +57,34 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.wise_monkey, function (sprite, o
     otherSprite.say("Welcome, traveler! There is a way out of this place, but you must find it!", 5000)
 })
 function hard_2 () {
-	
+    tiles.setTilemap(tilemap`level4`)
+    game.splash("Dont touch the purple!")
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(15, 11))
+    hard = true
 }
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorthWest1, function (sprite, location) {
+    if (hard) {
+        tiles.placeOnTile(mySprite, tiles.getTileLocation(15, 11))
+        info.changeLifeBy(-1)
+        tiles.setTilemap(tilemap`level4`)
+    }
+})
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.collectibleBlueCrystal, function (sprite, location) {
     less_hard_path()
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.doorLockedSouth, function (sprite, location) {
     hard_2()
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.buttonOrangeDepressed, function (sprite, location) {
+    tiles.setTilemap(tilemap`level6`)
+})
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardLava1, function (sprite, location) {
-    mySprite.startEffect(effects.disintegrate, 500)
+    mySprite.startEffect(effects.fire, 500)
     less_hard_path()
     info.changeLifeBy(-1)
+})
+scene.onOverlapTile(SpriteKind.Player, sprites.builtin.field1, function (sprite, location) {
+    tiles.setTilemap(tilemap`level7`)
 })
 function hard_path () {
     tiles.setTilemap(tilemap`level2`)
@@ -64,28 +94,47 @@ function hard_path () {
     controller.moveSprite(mySprite, 100, 100)
     statusbar.attachToSprite(mySprite)
     mySprite2 = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
+        . . . . f f f f f . . . . . . . 
+        . . . f e e e e e f . . . . . . 
+        . . f d d d d e e e f . . . . . 
+        . c d f d d f d e e f f . . . . 
+        . c d f d d f d e e d d f . . . 
+        c d e e d d d d e e b d c . . . 
+        c d d d d c d d e e b d c . . . 
+        c c c c c d d e e e f c . . . . 
+        . f d d d d e e e f f . . . . . 
+        . . f f f f f e e e e f . . . . 
+        . . . . f f e e e e e e f . f f 
+        . . . f e e f e e f e e f . e f 
+        . . f e e f e e f e e e f . e f 
+        . f b d f d b f b b f e f f e f 
+        . f d d f d d f d d b e f f f f 
+        . . f f f f f f f f f f f f f . 
         `, SpriteKind.wise_monkey)
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(56, 7))
 }
 function less_hard_path () {
     tiles.setTilemap(tilemap`level3`)
     level_2 = true
+    mySprite3 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . 2 2 2 2 . 2 2 2 2 . . . . 
+        . . . 2 2 2 2 2 2 2 2 2 2 . . . 
+        . . 2 2 2 2 2 2 2 2 2 2 2 2 . . 
+        . . 2 2 2 2 2 2 2 2 2 2 2 2 . . 
+        . . 2 2 2 2 2 2 2 2 2 2 2 2 . . 
+        . . . 2 2 2 2 2 2 2 2 2 2 2 . . 
+        . . . 2 2 2 2 2 2 2 2 2 2 . . . 
+        . . . . 2 2 2 2 2 2 2 2 . . . . 
+        . . . . . 2 2 2 2 2 2 . . . . . 
+        . . . . . . 2 2 2 2 . . . . . . 
+        . . . . . . 2 2 2 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.heart)
+    tiles.placeOnTile(mySprite3, tiles.getTileLocation(94, 12))
     shooter_1 = sprites.create(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
@@ -205,6 +254,9 @@ function less_hard_path () {
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.collectibleRedCrystal, function (sprite, location) {
     hard_path()
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.buttonTeal, function (sprite, location) {
+    game.over(false)
+})
 let projectile: Sprite = null
 let shooter_6: Sprite = null
 let shooter_5: Sprite = null
@@ -212,7 +264,9 @@ let shooter_4: Sprite = null
 let shooter_3: Sprite = null
 let shooter_2: Sprite = null
 let shooter_1: Sprite = null
+let mySprite3: Sprite = null
 let mySprite2: Sprite = null
+let hard = false
 let level_2 = false
 let statusbar: StatusBarSprite = null
 let jump_track = 0
@@ -246,6 +300,7 @@ statusbar = statusbars.create(20, 4, StatusBarKind.Health)
 statusbar.attachToSprite(mySprite)
 mySprite.ay = 200
 level_2 = false
+hard = false
 game.onUpdateInterval(1000, function () {
     if (level_2) {
         projectile = sprites.createProjectileFromSprite(img`
