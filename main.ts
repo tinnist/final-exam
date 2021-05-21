@@ -58,8 +58,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.wise_monkey, function (sprite, o
 })
 function hard_2 () {
     tiles.setTilemap(tilemap`level4`)
-    game.splash("Dont touch the purple!")
     tiles.placeOnTile(mySprite, tiles.getTileLocation(15, 11))
+    game.splash("Dont touch the purple!")
     hard = true
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorthWest1, function (sprite, location) {
@@ -272,6 +272,7 @@ let statusbar: StatusBarSprite = null
 let jump_track = 0
 let mySprite: Sprite = null
 tiles.setTilemap(tilemap`level1`)
+game.showLongText("This is the first part of my masterpiece. Dont worry, I promise that its possible!", DialogLayout.Bottom)
 mySprite = sprites.create(img`
     . . . . . . f f f f . . . . . . 
     . . . . f f f 2 2 f f f . . . . 
@@ -290,7 +291,6 @@ mySprite = sprites.create(img`
     . . . . . f f f f f f . . . . . 
     . . . . . f f . . f f . . . . . 
     `, SpriteKind.Player)
-game.showLongText("This is the first part of my masterpiece. Dont worry, I promise that its possible!", DialogLayout.Bottom)
 tiles.placeOnTile(mySprite, tiles.getTileLocation(3, 2))
 controller.moveSprite(mySprite, 100, 0)
 scene.cameraFollowSprite(mySprite)
